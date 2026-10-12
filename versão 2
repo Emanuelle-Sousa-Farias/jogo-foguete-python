@@ -27,10 +27,16 @@ angulo = float(input("Ângulo com a horizontal, em graus: "))
 #gravidade
 g = 10.0
 
-#calculos e resultados
-angulo_rad = math.radians(angulo) #converte para radianos
-Vx = velocidade * math.cos(angulo_rad) #calcula componente horizontal
-Vy = velocidade * math.sin(angulo_rad) #calcula componente vertical
+#limita que a pessoa digite valores que façam o calculo do cosseno dar negativo (foguete vai pra trás), e que o angulo seja maior que 90 (foguete vai pra baixo)
+if velocidade <= 0 or angulo < 0 or angulo > 90:
+    print("Valor(es) inválido(s). A velocidade deve ser maior que 0 e o ângulo deve ser <= 90 e >= 0.")
+    exit()
+else:
+    #calculos e resultados
+    angulo_rad = math.radians(angulo) #converte para radianos
+    Vx = velocidade * math.cos(angulo_rad) #calcula componente horizontal
+    Vy = velocidade * math.sin(angulo_rad) #calcula componente vertical
+
 #cálculos relacionados ao alvo
 tempo_alvo = alvo_x / Vx # calcula o tempo gasto para o projetil chegar até alvo_x
 calc_y =  Vy * tempo_alvo - 0.5 * g * tempo_alvo**2 #calcula a posição y nesse mesmo tempo
