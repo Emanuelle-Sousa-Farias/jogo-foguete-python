@@ -1,0 +1,89 @@
+#bibliotecas
+import math
+import matplotlib.pyplot as plt
+import numpy as np 
+import random
+
+
+#randomiza a posição do alvo
+alvo_x = random.randint(0,100)
+alvo_y = random.randint(0,100)
+
+#constroi o gráfico com o alvo
+#scatter coloca pontos isolados no g´rafico
+plt.scatter(0,0,color = 'black',marker = "o", edgecolors = "white", s = 100,zorder = 6) #mostra a posição inicial do projétil
+plt.scatter(alvo_x, alvo_y, marker="o",color = "red", edgecolors = "black", s = 150, zorder = 6, label = "Alvo") 
+plt.scatter(alvo_x, alvo_y, marker = "o", color = "white", s = 30, zorder = 7)
+plt.title(f"Posição do Alvo: ({alvo_x},{alvo_y})") #titulo do grafico
+plt.xlabel("Alcance (m)") #nome do eixo x
+plt.ylabel("Altura (m)") #nome do eixo y
+plt.grid(True) #poe grid (achei bonitinho)
+plt.show() #mostra o grafico
+
+#entradas
+velocidade = float(input("Velocidade inicial em m/s: "))
+angulo = float(input("Ângulo com a horizontal, em graus: "))
+
+#gravidade
+g = 10.0
+
+#calculos e resultados
+angulo_rad = math.radians(angulo) #converte para radianos
+Vx = velocidade * math.cos(angulo_rad) #calcula componente horizontal
+Vy = velocidade * math.sin(angulo_rad) #calcula componente vertical
+#cálculos relacionados ao alvo
+tempo_alvo = alvo_x / Vx # calcula o tempo gasto para o projetil chegar até alvo_x
+calc_y =  Vy * tempo_alvo - 0.5 * g * tempo_alvo**2 #calcula a posição y nesse mesmo tempo
+
+#agora é conferir se a posição alvo_y corresponde a calc_y, dentro da margem de erro = 10cm
+if abs(calc_y - alvo_y) <= 0.1:
+    valor = "ACERTOU"
+else:
+    valor = "ERROU"
+
+print("\n--- Componentes da Velocidade ---")
+print(f"Componente horizontal: {Vx:.2f} m/s")
+print(f"Componente vertical: {Vy:.2f} m/s")
+
+tempo_voo = 2*Vy/g #calcula tempo de voo
+altura_max = (math.pow(Vy, 2))/(2*g) #calcula altura maxima
+alcance = Vx*tempo_voo #calcula o alcance
+
+print("\n--- Resultados ---")
+print(f"tempo de voo: {tempo_voo:.2f} s")
+print(f"altura máxima: {altura_max:.2f} m")
+print(f"alcance: {alcance:.2f} m")
+
+#tabela de posicoes
+print("\n--- Tabela de Posições ---")
+print("Tempo (s) | Altura (m) | Alcance (m)")
+
+#numero de vezes que o programa vai calcular a posicao do foguete (9 por que sao 10 pontos, incluindo o ponto inicial)
+# n_intervalos = 9
+#linspace cria um ndarray com 10 elementos q vai de 0 a tempo_voo
+t = np.linspace(0,tempo_voo,10)
+
+#guardam os valores pra fazer o grafico
+# tempos = []
+#eu posso multiplicar um valor por um ndarray pq ele multiplica o fator por cada elemento do array
+posicoes_x = Vx * t
+posicoes_y = Vy * t - 0.5 * g * t**2
+#assim, eu consigo um vetor posições_x e um vetor posições_y sem ter q usar for loop
+posicoes_y[-1] = 0.00
+#garante que o último valor vai ser zero
+
+#faz a tabela
+for i in range(10):
+    print(f"{t[i]:.2f} | {posicoes_y[i]:.2f} | {posicoes_x[i]:.2f} ")
+
+#grafico
+plt.plot(posicoes_x, posicoes_y, marker="o") #desnha a trajetoria, com "o" marcando os pontos
+plt.scatter(alvo_x, alvo_y, marker="o",color = "red", edgecolors = "black", s = 150, zorder = 6, label = "Alvo") #desnha a trajetoria, com "o" marcando os pontos
+plt.scatter(alvo_x, alvo_y, marker = "o", color = "white", s = 30, zorder = 7)
+plt.title(f"Caminho do Foguete: {valor}") #titulo do grafico
+plt.xlabel("Alcance (m)") #nome do eixo x
+plt.ylabel("Altura (m)") #nome do eixo y
+plt.grid(True) #poe grid (achei bonitinho)
+plt.show() #mostra o grafico
+
+
